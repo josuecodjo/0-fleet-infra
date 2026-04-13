@@ -1,0 +1,35 @@
+# argocd-appset.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform-fleet
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/josuecodjo/0-fleet-infra.git
+        revision: HEAD
+        directories:
+          - path: apps/*/*
+          - path: apps/*/base
+            exclude: true
+  template:
+    metadata:
+      # Automatically names them: java-service-dev, python-service-prod, etc.
+      name: "{{path.segments[1]}}-{{path.segments[2]}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/josuecodjo/0-fleet-infra.git
+        targetRevision: HEAD
+        path: "{{path}}"
+      destination:
+        server: https://kubernetes.default.svc
+        # Automatically targets the 'dev' or 'prod' namespaces
+        namespace: "{{path.segments[2]}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

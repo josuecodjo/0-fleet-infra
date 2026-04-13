@@ -1,0 +1,11 @@
+# apps/java-service/base/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: java-service
