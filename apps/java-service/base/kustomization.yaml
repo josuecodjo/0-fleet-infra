@@ -1,6 +1,6 @@
-# apps/java-service/base/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - rollout.yaml
-  - service.yaml
+  - service-active.yaml
+  - service-preview.yaml

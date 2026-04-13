@@ -1,4 +1,3 @@
-# apps/java-service/base/rollout.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
@@ -13,13 +12,31 @@ spec:
       labels:
         app: java-service
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
         - name: java-service
-          image: public.ecr.aws/nginx/nginx:1.24 # Baseline Java mock image
+          image: public.ecr.aws/nginx/nginx:1.24
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+      volumes:
+        - name: content
+          configMap:
+            name: java-content
   strategy:
-    canary:
-      steps:
-        - setWeight: 50
-        - pause: { duration: 20s }
+    blueGreen:
+      activeService: java-service-active
+      previewService: java-service-preview
+      autoPromotionEnabled: false # Pauses indefinitely for manual/Keptn promotion

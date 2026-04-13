@@ -1,10 +1,9 @@
-# apps/python-service/base/rollout.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: python-service
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       app: python-service
@@ -13,13 +12,33 @@ spec:
       labels:
         app: python-service
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
         - name: python-service
-          image: public.ecr.aws/docker/library/httpd:2.4.50 # Baseline Python mock image
+          image: public.ecr.aws/docker/library/httpd:2.4.50
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+      volumes:
+        - name: content
+          configMap:
+            name: python-content
   strategy:
     canary:
       steps:
+        - setWeight: 25
+        - pause: {} # Pauses indefinitely for manual promotion
         - setWeight: 50
-        - pause: { duration: 20s }
+        - pause: { duration: 1m } # Auto-advances after 1 minute

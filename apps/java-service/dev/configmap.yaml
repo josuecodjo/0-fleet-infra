@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: java-content
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>java-dev</title>
+    </head>
+    <body>
+
+    <h1>java-dev</h1>
+
+    </body>
+    </html>
