@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: java-service
+  name: java-service-active
 spec:
   ports:
     - port: 80
