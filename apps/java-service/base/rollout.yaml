@@ -39,4 +39,4 @@ spec:
     blueGreen:
       activeService: java-service-active
       previewService: java-service-preview
-      autoPromotionEnabled: false # Pauses indefinitely for manual/Keptn promotion
+      autoPromotionEnabled: true # Pauses indefinitely for manual/Keptn promotion

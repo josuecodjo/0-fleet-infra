@@ -39,6 +39,6 @@ spec:
     canary:
       steps:
         - setWeight: 25
-        - pause: {} # Pauses indefinitely for manual promotion
+        - pause: { duration: 1m } # auto-advances after 1 minute
         - setWeight: 50
         - pause: { duration: 1m } # Auto-advances after 1 minute
