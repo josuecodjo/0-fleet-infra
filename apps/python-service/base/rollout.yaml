@@ -27,14 +27,14 @@ spec:
             limits:
               cpu: 200m
               memory: 256Mi
-          volumeMounts:
-            - name: content
-              mountPath: /usr/share/nginx/html
-              readOnly: true
-      volumes:
-        - name: content
-          configMap:
-            name: python-content
+      #     volumeMounts:
+      #       - name: content
+      #         mountPath: /usr/share/nginx/html
+      #         readOnly: true
+      # volumes:
+      #   - name: content
+      #     configMap:
+      #       name: python-content
   strategy:
     canary:
       steps:
