@@ -12,9 +12,9 @@ spec:
       labels:
         app: java-service
     spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000
       containers:
         - name: java-service
           image: public.ecr.aws/nginx/nginx:1.24

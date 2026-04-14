@@ -12,9 +12,9 @@ spec:
       labels:
         app: python-service
     spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
+      # securityContext:
+      #   runAsNonRoot: true
+      #   runAsUser: 1000
       containers:
         - name: python-service
           image: public.ecr.aws/docker/library/httpd:2.4.50
