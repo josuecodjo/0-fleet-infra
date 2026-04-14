@@ -27,14 +27,14 @@ spec:
             limits:
               cpu: 500m
               memory: 1Gi
-      #     volumeMounts:
-      #       - name: content
-      #         mountPath: /usr/share/nginx/html
-      #         readOnly: true
-      # volumes:
-      #   - name: content
-      #     configMap:
-      #       name: java-content
+          volumeMounts:
+            - name: content
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+      volumes:
+        - name: content
+          configMap:
+            name: java-content
   strategy:
     blueGreen:
       activeService: java-service-active
