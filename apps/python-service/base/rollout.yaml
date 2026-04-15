@@ -31,6 +31,28 @@ spec:
             - name: content
               mountPath: /usr/share/nginx/html
               readOnly: true
+          # --- LIVENESS PROBE ---
+          # Checks if the container is deadlocked. If it fails 3 times, Kubernetes restarts it.
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30 # Give the JVM time to spin up
+            periodSeconds: 15 # Check every 15 seconds
+            timeoutSeconds: 3 # Must respond within 3 seconds
+            failureThreshold: 3 # Restart after 3 consecutive failures
+
+          # --- READINESS PROBE ---
+          # Checks if the app is ready for traffic. Argo Rollouts waits for this.
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10 # Check more frequently than liveness
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1 # Needs 1 success to be marked Ready
       volumes:
         - name: content
           configMap:
@@ -39,6 +61,8 @@ spec:
     canary:
       steps:
         - setWeight: 25
-        - pause: { duration: 1m } # auto-advances after 1 minute
+        - pause: { duration: 30s } # auto-advances after 30 seconds
         - setWeight: 50
         - pause: { duration: 1m } # Auto-advances after 1 minute
+        - setWeight: 75
+        - pause: { duration: 30s } # Auto-advances after 30 seconds

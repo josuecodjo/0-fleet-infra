@@ -3,7 +3,7 @@ kind: Rollout
 metadata:
   name: java-service
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: java-service
@@ -31,12 +31,57 @@ spec:
             - name: content
               mountPath: /usr/share/nginx/html
               readOnly: true
+          # --- LIVENESS PROBE ---
+          # Checks if the container is deadlocked. If it fails 3 times, Kubernetes restarts it.
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30 # Give the JVM time to spin up
+            periodSeconds: 15 # Check every 15 seconds
+            timeoutSeconds: 3 # Must respond within 3 seconds
+            failureThreshold: 3 # Restart after 3 consecutive failures
+
+          # --- READINESS PROBE ---
+          # Checks if the app is ready for traffic. Argo Rollouts waits for this.
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10 # Check more frequently than liveness
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1 # Needs 1 success to be marked Ready
       volumes:
         - name: content
           configMap:
             name: java-content
+
   strategy:
     blueGreen:
+      # Service for production traffic
       activeService: java-service-active
+      # Service for testing new version before promotion
       previewService: java-service-preview
-      autoPromotionEnabled: true # Pauses indefinitely for manual/Keptn promotion
+      previewReplicaCount: 1
+      # Automatically promote after successful analysis
+      autoPromotionEnabled: true # Keptn
+      # Wait for analysis before auto-promotion
+      autoPromotionSeconds: 300
+      # Scale down old version after this delay
+      scaleDownDelaySeconds: 30
+      # Run analysis before promotion
+      prePromotionAnalysis:
+        templates:
+          - templateName: web-analysis
+        args:
+          - name: url
+            value: "http://java-service-preview:80/"
+      # Run analysis after promotion
+      postPromotionAnalysis:
+        templates:
+          - templateName: web-analysis
+        args:
+          - name: url
+            value: "http://java-service-active:80"

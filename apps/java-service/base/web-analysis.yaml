@@ -1,0 +1,18 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: web-analysis
+spec:
+  args:
+    - name: url
+  metrics:
+    - name: check-http-200
+      initialDelay: 5s
+      count: 3
+      interval: 10s
+      failureLimit: 1
+      provider:
+        web:
+          url: "{{ args.url }}"
+          timeoutSeconds: 5
