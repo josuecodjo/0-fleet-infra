@@ -68,7 +68,7 @@ spec:
       # Automatically promote after successful analysis
       autoPromotionEnabled: true # Keptn
       # Wait for analysis before auto-promotion
-      autoPromotionSeconds: 300
+      autoPromotionSeconds: 30
       # Scale down old version after this delay
       scaleDownDelaySeconds: 30
       # Run analysis before promotion
