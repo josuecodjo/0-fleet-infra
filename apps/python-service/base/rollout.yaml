@@ -17,7 +17,7 @@ spec:
       #   runAsUser: 1000
       containers:
         - name: python-service
-          image: public.ecr.aws/docker/library/httpd:2.4.50
+          image: public.ecr.aws/docker/library/httpd:2.4.50 ## 2.4.50
           ports:
             - containerPort: 80
           resources:

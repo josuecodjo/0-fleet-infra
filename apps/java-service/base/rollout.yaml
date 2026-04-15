@@ -17,7 +17,7 @@ spec:
       #   runAsUser: 1000
       containers:
         - name: java-service
-          image: public.ecr.aws/nginx/nginx:1.24
+          image: public.ecr.aws/nginx/nginx:1.24 ## 1.24
           ports:
             - containerPort: 80
           resources:
