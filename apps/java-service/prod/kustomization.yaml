@@ -4,3 +4,21 @@ kind: Kustomization
 resources:
   - ../base
   - configmap.yaml
+
+patches:
+  - patch: |
+      apiVersion: argoproj.io/v1alpha1
+      kind: Rollout
+      metadata:
+        name: java-service
+      spec:
+        strategy:
+          blueGreen:
+            prePromotionAnalysis:
+              args:
+              - name: url
+                value: 'http://java-service-preview.prod.svc.cluster.local:80/'
+            postPromotionAnalysis:
+              args:
+              - name: url
+                value: 'http://java-service-active.prod.svc.cluster.local:80/'

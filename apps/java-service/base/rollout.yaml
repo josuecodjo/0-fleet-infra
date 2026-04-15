@@ -77,11 +77,9 @@ spec:
           - templateName: web-analysis
         args:
           - name: url
-            value: "http://java-service-preview:80/"
       # Run analysis after promotion
       postPromotionAnalysis:
         templates:
           - templateName: web-analysis
         args:
           - name: url
-            value: "http://java-service-active:80"
